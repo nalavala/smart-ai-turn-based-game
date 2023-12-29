@@ -3,6 +3,7 @@ package board;
 
 import game.Board;
 import game.Cell;
+import game.Move;
 
 public class TikTacToeBoard extends Board {
 
@@ -22,7 +23,8 @@ public class TikTacToeBoard extends Board {
     }
 
 
-
-
-
+    @Override
+    public void move(Board board, Move move) {
+        setCell(move.getCell(), move.getPlayer().getSymbol());
+    }
 }

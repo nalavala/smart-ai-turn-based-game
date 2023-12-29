@@ -5,6 +5,7 @@ import game.Move;
 import board.TikTacToeBoard;
 import game.Board;
 
+
 public class GameEngine {
 
     public Board start(String gameType) {
@@ -15,20 +16,16 @@ public class GameEngine {
         }
     }
 
-    public void makeMove(Board board , Move move) {
+    public void move(Board board , Move move) {
 
         if(board instanceof TikTacToeBoard) {
-            TikTacToeBoard tikTacToeBoard = (TikTacToeBoard) board;
-            tikTacToeBoard.setCell(move.getCell(), move.getPlayer().getSymbol());
+            board.move(board, move);
         } else {
             throw new IllegalArgumentException();
         }
 
     }
 
-    public GameResult isComplete(Board board) {
-        return new GameResult();
-    }
 }
 
 
