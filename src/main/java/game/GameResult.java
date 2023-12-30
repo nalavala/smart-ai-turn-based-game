@@ -1,11 +1,18 @@
 package game;
 
-import game.Player;
-
 public class GameResult {
 
     private boolean isOver;
-    private Player player;
+    private String symbol;
+
+    public GameResult(boolean isOver, String player) {
+        this.isOver = isOver;
+        this.symbol = player;
+    }
+
+    public GameResult(boolean isOver) {
+        this.isOver = isOver;
+    }
 
     public boolean isOver() {
         return isOver;
@@ -15,11 +22,11 @@ public class GameResult {
         isOver = over;
     }
 
-    public Player getPlayer() {
-        return player;
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 }
