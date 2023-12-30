@@ -14,7 +14,7 @@ public class TikTacToeBoard extends Board {
 
     }
 
-    public String getCell(int row, int col) {
+    public String getSymbol(int row, int col) {
         return cells[row][col];
     }
 
@@ -24,7 +24,19 @@ public class TikTacToeBoard extends Board {
 
 
     @Override
-    public void move(Board board, Move move) {
+    public void move(Move move) {
+        if(cells[move.getCell().getRow()][move.getCell().getCol()] != null) {
+            throw new IllegalStateException();
+        }
         setCell(move.getCell(), move.getPlayer().getSymbol());
+    }
+
+    public Board clone() {
+        TikTacToeBoard board = new TikTacToeBoard();
+        for(int i=0;i<3;i++) {
+            System.arraycopy(cells[i],0, board.cells[i], 0, 3);
+        }
+
+        return board;
     }
 }

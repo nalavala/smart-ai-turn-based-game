@@ -4,11 +4,9 @@ public class Player {
 
 
     private String symbol;
-    private String name;
 
-    public Player(String symbol, String name) {
+    public Player(String symbol) {
         this.symbol = symbol;
-        this.name = name;
     }
 
     public String getSymbol() {
@@ -19,7 +17,12 @@ public class Player {
         this.symbol = symbol;
     }
 
-    public String getName() {
-        return name;
+
+    public Player flip() {
+        if(this.symbol == "X") {
+            return new Player("O");
+        } else {
+            return new Player("X");
+        }
     }
 }

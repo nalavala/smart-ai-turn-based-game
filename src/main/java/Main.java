@@ -20,10 +20,10 @@ public class Main {
         Board board = gameEngine.start("TikTacToeBoard");
 
         Scanner scan = new Scanner(System.in);
-        while(!engine.isComplete(board).isOver()) {
+        while(!engine.getState(board).isOver()) {
             System.out.println("Move your Move");
-            Player human = new Player("X", "Human");
-            Player robo = new Player("O", "robo");
+            Player human = new Player("X");
+            Player robo = new Player("O");
             int row = scan.nextInt();
             int col = scan.nextInt();
 
@@ -32,12 +32,12 @@ public class Main {
             // Human move
             gameEngine.move(board, move);
 
-            if(engine.isComplete(board).isOver()) {
+            if(engine.getState(board).isOver()) {
                 Move opponentMove = aiEngine.suggestMove(robo, board);
                 gameEngine.move(board, opponentMove);
             }
         }
 
-        System.out.println("Game Result:" + engine.isComplete(board));
+        System.out.println("Game Result:" + engine.getState(board));
     }
 }

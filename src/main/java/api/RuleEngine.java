@@ -9,7 +9,7 @@ import game.GameResult;
  */
 public class RuleEngine {
 
-    public GameResult isComplete(Board board) {
+    public GameResult getState(Board board) {
         return new GameResult();
     }
 }

@@ -19,7 +19,7 @@ public class GameEngine {
     public void move(Board board , Move move) {
 
         if(board instanceof TikTacToeBoard) {
-            board.move(board, move);
+            board.move(move);
         } else {
             throw new IllegalArgumentException();
         }
