@@ -1,16 +1,16 @@
 package game;
 
-public class GameResult {
+public class GameState {
 
     private boolean isOver;
     private String symbol;
 
-    public GameResult(boolean isOver, String player) {
+    public GameState(boolean isOver, String player) {
         this.isOver = isOver;
         this.symbol = player;
     }
 
-    public GameResult(boolean isOver) {
+    public GameState(boolean isOver) {
         this.isOver = isOver;
     }
 

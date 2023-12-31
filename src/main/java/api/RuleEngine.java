@@ -2,7 +2,8 @@ package api;
 
 import board.TikTacToeBoard;
 import game.Board;
-import game.GameResult;
+import game.Cell;
+import game.GameState;
 
 import java.util.Iterator;
 import java.util.function.BiFunction;
@@ -14,84 +15,103 @@ import java.util.function.Function;
  */
 public class RuleEngine {
 
-    public GameResult getState(Board board) {
-
-
-
-
-
-
+    public GameState getState(Board board) {
         final TikTacToeBoard tikTacToeBoard = (TikTacToeBoard) board;
         if(board instanceof TikTacToeBoard) {
+
             // Row Check
-
-            Function<Integer, String> firstRowValueSupplier = i -> tikTacToeBoard.getSymbol(i, 0);
-            Function<Integer, String> firstColumnValueSupplier = i -> tikTacToeBoard.getSymbol(0, i);
-
             BiFunction<Integer,Integer, String> getNextRow = (i,j) -> tikTacToeBoard.getSymbol(i, j);
-
-            BiFunction<Integer,Integer, String> getNextColumn = (i,j) -> tikTacToeBoard.getSymbol(j,i);
-
-
-
-            boolean isSomeoneWon = true;
-            GameResult rowWin = isVictory(getNextRow);
-            if(rowWin != null) {
+            GameState rowWin = findVictory(getNextRow);
+            if(rowWin.isOver()) {
                 return rowWin;
             }
 
-            GameResult colWin = isVictory(getNextColumn);
-            if(colWin != null) {
+            // Col Check
+            BiFunction<Integer,Integer, String> getNextColumn = (i,j) -> tikTacToeBoard.getSymbol(j,i);
+            GameState colWin = findVictory(getNextColumn);
+            if(colWin.isOver()) {
                 return colWin;
             }
 
-            isSomeoneWon = true;
-            for(int i=0;i<3;i++) {
-                String firstCharacter = firstColumnValueSupplier.apply( i);
-                if(firstCharacter != null) {
-                    for(int j=1;j<3;j++) {
-                        if(!firstCharacter.equalsIgnoreCase(getNextColumn.apply(j,i))) {
-                            isSomeoneWon = false;
-                            break;
-                        }
-                    }
-                }
-
-                if(isSomeoneWon) {
-                    return new GameResult(true, firstCharacter);
-                }
-
+            // Diagonal
+            Function<Integer, String> getNextDiagonal = i -> tikTacToeBoard.getSymbol(i,i);
+            GameState diagonalVictory = findDiagonalVictory(getNextDiagonal);
+            if(diagonalVictory.isOver()) {
+                return diagonalVictory;
             }
-            // Column check
 
-            // Diagonal check
-            // Reverse diagonal check
+            // Reverse Diagonal
+            Function<Integer, String> getNextReverseDiagonal = i -> tikTacToeBoard.getSymbol(i,i);
+            GameState reverseDiagonalVictory = findDiagonalVictory(getNextDiagonal);
+            if(reverseDiagonalVictory.isOver()) {
+                return reverseDiagonalVictory;
+            }
+
         }
 
-
-
-        return new GameResult(false);
+        return new GameState(false);
     }
 
 
-    private GameResult isVictory(BiFunction<Integer, Integer, String> next) {
-        boolean isPossibleStreak = true;
+    private GameState findDiagonalVictory(Function<Integer, String> next) {
+        GameState state = new GameState(false);
+        if(traversal(next)) {
+            state = new GameState(true, next.apply(0));
+        }
+        return state;
+    }
+
+    private boolean traversal(Function<Integer, String> next) {
         for(int i=0;i<3;i++) {
-            for(int j=0;j<3;j++) {
-                if(next.apply(i,j) != null && !next.apply(i,0).equalsIgnoreCase(next.apply(i, j))) {
-                    isPossibleStreak = false;
-                    break;
+            if(next.apply(0) != null  && next.apply(0).equalsIgnoreCase(next.apply(i))) {
+                return  false;
+            }
+        }
+        return true;
+    }
+
+    private GameState findVictory(BiFunction<Integer, Integer, String> next) {
+
+        GameState state = new GameState(false);
+        for(int i=0;i<3;i++) {
+            int finalI = i;
+            Function<Integer, String> traversal = j -> next.apply(finalI,j);
+            if(traversal(traversal)) {
+                state =  new GameState(true, next.apply(i,0));
+            }
+        }
+        return state;
+    }
+
+    private GameState isVictory(TikTacToeBoard tikTacToeBoard, Iterator<Cell> iterator, Iterator<Cell> firstCharIterator) {
+        while (firstCharIterator.hasNext()) {
+            boolean isPossibleStreak = true;
+            Cell firstCell = firstCharIterator.next();
+            int firstCol = firstCell.getCol();
+            int firstRow = firstCell.getRow();
+            String firstSymbol = tikTacToeBoard.getSymbol(firstRow, firstCol);
+            if(firstSymbol != null) {
+                while (iterator.hasNext()) {
+                    Cell cell = iterator.next();
+                    int row = cell.getRow();
+                    int col = cell.getCol();
+                    String currentSymbol =  tikTacToeBoard.getSymbol(row, col);
+                    if(currentSymbol != null && !firstSymbol.equalsIgnoreCase(currentSymbol)) {
+                        isPossibleStreak = false;
+                        break;
+
+                    }
                 }
+
             }
 
             if(isPossibleStreak) {
-                return new GameResult(true, next.apply(i,0));
+                return new GameState(true, firstSymbol);
             }
 
         }
         return null;
     }
-
 
 
 
